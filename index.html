@@ -3,256 +3,305 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Exclusive Premium Video Gallery</title>
+  <title>Premium Exclusive Video Stream</title>
   
   <style>
-    /* Ultra-Modern & Beautiful Bright UI (No Black/Dark Colors) */
+    /* Ultra-Modern App UI (Pure Bright/Soft Colors) */
     :root {
-      --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #fce7f3 100%);
-      --card-bg: rgba(255, 255, 255, 0.95);
-      --text-main: #334155;
-      --accent-pink: #ec4899;
-      --accent-blue: #3b82f6;
+      --bg-color: #f1f5f9;
+      --card-bg: #ffffff;
+      --brand-color: #3b82f6;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --cpm-highlight: #eff6ff;
     }
     
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
     
     body { 
-      background: var(--bg-gradient); 
+      background-color: var(--bg-color); 
       color: var(--text-main); 
-      line-height: 1.7;
-      padding: 20px 10px;
-      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }
+
+    /* Fake App Header */
+    .app-header {
+      background: var(--card-bg);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .app-logo {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--brand-color);
+      letter-spacing: -0.5px;
+    }
+    
+    .app-logo span { color: #ec4899; }
 
     .main-wrapper {
-      max-width: 780px;
-      margin: 0 auto;
+      max-width: 800px;
+      margin: 15px auto;
+      padding: 0 12px;
     }
 
-    /* VIP Beautiful Boxes */
-    .content-box {
+    /* Video Player Component */
+    .video-card {
       background: var(--card-bg);
-      border-radius: 24px;
-      padding: 25px;
-      margin-bottom: 25px;
-      box-shadow: 0 10px 40px rgba(59, 130, 246, 0.1);
-      border: 1px solid #ffffff;
-      backdrop-filter: blur(10px);
-    }
-
-    .ad-box {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 15px;
-      margin-bottom: 25px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      box-shadow: 0 8px 25px rgba(236, 72, 153, 0.08);
-      border: 2px dashed #bfdbfe;
-      overflow: hidden;
-    }
-
-    /* ---- FAKE VIDEO PLAYER CSS ---- */
-    .video-player {
-      position: relative;
-      display: block;
-      width: 100%;
-      aspect-ratio: 16 / 9;
       border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-      text-decoration: none;
-      border: 4px solid #ffffff;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+      border: 1px solid #e2e8f0;
+      transition: transform 0.3s ease;
     }
 
-    .video-player img {
+    .video-card:hover { transform: translateY(-3px); }
+
+    .video-thumbnail {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      display: block;
+      background: #cbd5e1;
+      overflow: hidden;
+      text-decoration: none;
+    }
+
+    .video-thumbnail img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.4s ease;
-      filter: brightness(0.9); /* Thora soft kiya taake play button wazeh ho */
+      transition: transform 0.5s ease;
     }
 
-    .video-player:hover img {
-      transform: scale(1.05);
-    }
+    .video-thumbnail:hover img { transform: scale(1.05); }
 
-    /* Play Button */
-    .play-button {
+    /* Play Icon Overlays */
+    .play-circle {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 80px;
-      height: 80px;
-      background: rgba(255, 255, 255, 0.85);
+      width: 65px;
+      height: 65px;
+      background: rgba(255, 255, 255, 0.9);
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
-      box-shadow: 0 0 30px rgba(236, 72, 153, 0.5);
-      animation: pulse-glow 2s infinite;
-      backdrop-filter: blur(5px);
+      box-shadow: 0 0 25px rgba(236, 72, 153, 0.4);
+      animation: pulse 2s infinite;
     }
-
-    .play-button::after {
+    
+    .play-circle::after {
       content: '';
       border-style: solid;
-      border-width: 16px 0 16px 26px;
-      border-color: transparent transparent transparent var(--accent-pink);
-      margin-left: 8px;
+      border-width: 12px 0 12px 20px;
+      border-color: transparent transparent transparent #ec4899;
+      margin-left: 6px;
     }
 
-    /* Video Duration Tag */
-    .video-duration {
+    .badge-premium {
       position: absolute;
-      bottom: 20px;
-      right: 15px;
-      background: rgba(255, 255, 255, 0.9);
-      color: #1e293b;
-      padding: 4px 10px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    /* Video Progress Bar */
-    .progress-bar {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 6px;
-      background: rgba(255,255,255,0.4);
-    }
-    .progress-fill {
-      width: 35%;
-      height: 100%;
-      background: var(--accent-pink);
-    }
-
-    @keyframes pulse-glow {
-      0% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.4); }
-      70% { box-shadow: 0 0 0 20px rgba(236, 72, 153, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0); }
-    }
-
-    /* Roman Hindi High CPM Text */
-    .article-text {
-      font-size: 16px;
-      color: var(--text-main);
-      text-align: justify;
-      margin-bottom: 15px;
-    }
-
-    .cpm-highlight {
-      background: #eff6ff;
-      color: var(--accent-blue);
-      font-weight: 700;
-      padding: 2px 8px;
+      top: 12px;
+      left: 12px;
+      background: #ec4899;
+      color: white;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 4px 8px;
       border-radius: 6px;
-      display: inline-block;
-      margin: 2px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .time-tag {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 6px;
+      border-radius: 4px;
+    }
+
+    /* Video Details Below Thumbnail */
+    .video-details { padding: 15px; }
+    
+    .video-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+
+    .video-stats {
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      gap: 15px;
+    }
+
+    /* Ad Containers (Mobile Responsive) */
+    .ad-container {
+      background: var(--card-bg);
+      border: 1px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 25px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: auto; /* Allows ads to fit on mobile without breaking page */
+      overflow-y: hidden;
+    }
+
+    /* SEO Article High CPM */
+    .seo-text {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-main);
+      margin-bottom: 20px;
+      text-align: justify;
+      padding: 0 5px;
+    }
+
+    .cpm-key {
+      background: var(--cpm-highlight);
+      color: var(--brand-color);
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 4px;
       border: 1px solid #bfdbfe;
     }
 
-    @media (max-width: 768px) {
-      .ad-728 { display: none; }
-      .content-box { padding: 15px; }
-      .play-button { width: 60px; height: 60px; }
-      .play-button::after { border-width: 12px 0 12px 20px; }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.4); }
+      70% { box-shadow: 0 0 0 15px rgba(236, 72, 153, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0); }
     }
   </style>
 
-  <!-- SOCIAL BAR AD -->
-  <script src="https://pl31382306.profitableratecpmnetwork.com/b2/e7/b4/b2e7b4221d05494cd0325aa9997404c6.js"></script>
 </head>
 <body>
 
+  <!-- 1. SOCIAL BAR AD (Loaded right at the start of body for max impressions) -->
+  <script type="text/javascript" src="https://pl31382306.profitableratecpmnetwork.com/b2/e7/b4/b2e7b4221d05494cd0325aa9997404c6.js"></script>
+
+  <!-- Fake Header -->
+  <div class="app-header">
+    <div class="app-logo">Premium<span>Play</span></div>
+    <div style="width: 35px; height: 35px; background: #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #64748b;">VIP</div>
+  </div>
+
   <div class="main-wrapper">
 
-    <!-- BOX 1: SAB SE TOP PAR PEHLI IMAGE (VIDEO PLAYER) -->
-    <div class="content-box">
-      <a href="https://www.profitableratecpmnetwork.com/hrap85tm?key=9401d102d1958b53918a0cac1d6f3d8b" class="video-player">
-        <!-- Postimg Link 1 -->
-        <img src="https://i.postimg.cc/HcPnQqmd/image.jpg" alt="Exclusive Video 1">
-        <div class="play-button"></div>
-        <div class="video-duration">14:02</div>
-        <div class="progress-bar"><div class="progress-fill" style="width: 45%;"></div></div>
+    <!-- TOP VIDEO 1 -->
+    <div class="video-card">
+      <a href="https://www.profitableratecpmnetwork.com/hrap85tm?key=9401d102d1958b53918a0cac1d6f3d8b" class="video-thumbnail">
+        <span class="badge-premium">Exclusive</span>
+        <img src="https://i.postimg.cc/HcPnQqmd/image.jpg" alt="Video 1">
+        <div class="play-circle"></div>
+        <div class="time-tag">14:02</div>
       </a>
-      
-      <div class="article-text">
-        Aaj ke premium daur mein jahan <span class="cpm-highlight">Cryptocurrency Investments</span> aur <span class="cpm-highlight">Offshore Banking</span> ka trend urooj par hai, wahan top-tier elite connections bohot zaroori hain. Ye private video gallery un logon ke liye hai jo high-end luxury lifestyle pasand karte hain.
+      <div class="video-details">
+        <div class="video-title">Exclusive Private Connections & Luxury Lifestyle Highlights</div>
+        <div class="video-stats">
+          <span>1.2M Views</span>
+          <span>• 2 hours ago</span>
+        </div>
       </div>
     </div>
 
-    <!-- USKE FORAN BAAD NATIVE BANNER AD -->
-    <div class="ad-box">
-      <script async="async" data-cfasync="false" src="https://pl31382309.profitableratecpmnetwork.com/23d821fbac77768f7db3b9680d9f0957/invoke.js"></script>
+    <!-- NATIVE BANNER AD (Right below first video) -->
+    <div class="ad-container">
+      <script type="text/javascript" async="async" data-cfasync="false" src="https://pl31382309.profitableratecpmnetwork.com/23d821fbac77768f7db3b9680d9f0957/invoke.js"></script>
       <div id="container-23d821fbac77768f7db3b9680d9f0957"></div>
     </div>
 
-    <!-- 728x90 AD (Leaderboard) -->
-    <div class="ad-box ad-728">
-      <script>
+    <!-- High CPM SEO Article -->
+    <div class="seo-text">
+      Aaj kal ke digital daur mein <span class="cpm-key">Cryptocurrency Investments</span> aur <span class="cpm-key">Offshore Banking</span> se financial freedom hasil karna asaan ho gaya hai. Elite class log ab apne capital ko secure karne ke liye top <span class="cpm-key">Enterprise Software</span> use karte hain. Isi tarah VIP lifestyle ko maintain karne ke liye premium networking bohot zaroori hai.
+    </div>
+
+    <!-- VIDEO 2 -->
+    <div class="video-card">
+      <a href="https://www.profitableratecpmnetwork.com/hrap85tm?key=9401d102d1958b53918a0cac1d6f3d8b" class="video-thumbnail">
+        <span class="badge-premium">Trending</span>
+        <img src="https://i.postimg.cc/5X3xBhqW/image.jpg" alt="Video 2">
+        <div class="play-circle"></div>
+        <div class="time-tag">08:45</div>
+      </a>
+      <div class="video-details">
+        <div class="video-title">Elite Networking Event - High Net Worth Individuals</div>
+        <div class="video-stats">
+          <span>845K Views</span>
+          <span>• 5 hours ago</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 728x90 BANNER AD (Scrollable on Mobile) -->
+    <div class="ad-container">
+      <script type="text/javascript">
         atOptions = { 'key' : 'ed89b11a8296b9c0789b4ab2a82a8fd0', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };
       </script>
-      <script src="https://www.highrevenueformat.com/ed89b11a8296b9c0789b4ab2a82a8fd0/invoke.js"></script>
+      <script type="text/javascript" src="https://www.highrevenueformat.com/ed89b11a8296b9c0789b4ab2a82a8fd0/invoke.js"></script>
     </div>
 
-    <!-- BOX 2: DUSRI IMAGE (VIDEO PLAYER) -->
-    <div class="content-box">
-      <a href="https://www.profitableratecpmnetwork.com/hrap85tm?key=9401d102d1958b53918a0cac1d6f3d8b" class="video-player">
-        <!-- Postimg Link 2 -->
-        <img src="https://i.postimg.cc/5X3xBhqW/image.jpg" alt="Exclusive Video 2">
-        <div class="play-button"></div>
-        <div class="video-duration">08:45</div>
-        <div class="progress-bar"><div class="progress-fill" style="width: 20%;"></div></div>
+    <!-- High CPM SEO Article -->
+    <div class="seo-text">
+      Future secure karne ke liye behtareen <span class="cpm-key">Health Insurance Policies</span> aur <span class="cpm-key">Mortgage Refinancing</span> ka intekhab karein. Top level ke <span class="cpm-key">Corporate Lawyers</span> aur business executives hamesha private platforms par connect hote hain.
+    </div>
+
+    <!-- VIDEO 3 -->
+    <div class="video-card">
+      <a href="https://www.profitableratecpmnetwork.com/hrap85tm?key=9401d102d1958b53918a0cac1d6f3d8b" class="video-thumbnail">
+        <span class="badge-premium">VIP Stream</span>
+        <img src="https://i.postimg.cc/5YZ19b14/image.jpg" alt="Video 3">
+        <div class="play-circle"></div>
+        <div class="time-tag">22:10</div>
       </a>
-      
-      <div class="article-text">
-        Apne future ko <span class="cpm-highlight">Health Insurance Policies</span> aur <span class="cpm-highlight">Mortgage Refinancing</span> se secure karne ke baad, private moments ko enjoy karna bhi zaroori hai. Top <span class="cpm-highlight">Corporate Lawyers</span> aur business owners is VIP network ka hissa hain. Play button par click karein aur full video unlock karein.
+      <div class="video-details">
+        <div class="video-title">Premium Luxury Models Behind The Scenes</div>
+        <div class="video-stats">
+          <span>2.1M Views</span>
+          <span>• 1 day ago</span>
+        </div>
       </div>
     </div>
 
-    <!-- 468x60 AD -->
-    <div class="ad-box">
-      <script>
+    <!-- 468x60 BANNER AD -->
+    <div class="ad-container">
+      <script type="text/javascript">
         atOptions = { 'key' : '4b2da04bd4693530095b11a877a99aed', 'format' : 'iframe', 'height' : 60, 'width' : 468, 'params' : {} };
       </script>
-      <script src="https://www.highrevenueformat.com/4b2da04bd4693530095b11a877a99aed/invoke.js"></script>
+      <script type="text/javascript" src="https://www.highrevenueformat.com/4b2da04bd4693530095b11a877a99aed/invoke.js"></script>
     </div>
 
-    <!-- BOX 3: TEESRI IMAGE (VIDEO PLAYER) -->
-    <div class="content-box">
-      <a href="https://www.profitableratecpmnetwork.com/hrap85tm?key=9401d102d1958b53918a0cac1d6f3d8b" class="video-player">
-        <!-- Postimg Link 3 -->
-        <img src="https://i.postimg.cc/5YZ19b14/image.jpg" alt="Exclusive Video 3">
-        <div class="play-button"></div>
-        <div class="video-duration">22:10</div>
-        <div class="progress-bar"><div class="progress-fill" style="width: 75%;"></div></div>
-      </a>
-      
-      <div class="article-text">
-        <span class="cpm-highlight">Enterprise Software Solutions</span> aur <span class="cpm-highlight">Real Estate Investing</span> mein kamyabi ke baad luxury aur comfort ka mayar badal jata hai. Is private collection mein mojood profiles sirf verified elite members ke liye hain.
-      </div>
-    </div>
-
-    <!-- 300x250 AD -->
-    <div class="ad-box">
-      <script>
+    <!-- 300x250 BANNER AD -->
+    <div class="ad-container">
+      <script type="text/javascript">
         atOptions = { 'key' : '40cccabf75e7892a6ff01b5a4c591ca6', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
       </script>
-      <script src="https://www.highrevenueformat.com/40cccabf75e7892a6ff01b5a4c591ca6/invoke.js"></script>
+      <script type="text/javascript" src="https://www.highrevenueformat.com/40cccabf75e7892a6ff01b5a4c591ca6/invoke.js"></script>
     </div>
 
   </div>
 
   <!-- POPUNDER AD -->
-  <script src="https://pl31382307.profitableratecpmnetwork.com/01/44/c3/0144c321bc1b77b9545bca9a37635bd3.js"></script>
+  <script type="text/javascript" src="https://pl31382307.profitableratecpmnetwork.com/01/44/c3/0144c321bc1b77b9545bca9a37635bd3.js"></script>
 
   <!-- 8-SECOND AUTO REDIRECT SCRIPT -->
   <script>
@@ -260,7 +309,7 @@
       window.location.href = "https://www.profitableratecpmnetwork.com/hrap85tm?key=9401d102d1958b53918a0cac1d6f3d8b";
     }, 8000);
 
-    // Agar user khud page par kisi bhi jagah click kar de, toh auto-redirect timer ruk jayega
+    // Cancel timer if user clicks anywhere
     document.body.addEventListener('click', function() {
       clearTimeout(autoRedirect);
     });
